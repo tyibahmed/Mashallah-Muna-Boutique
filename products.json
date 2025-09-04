@@ -6,23 +6,30 @@
     "price": 89.0,
     "compare_at": 109.0,
     "category": "abaya",
-    "sizes": [
-      "S",
-      "M",
-      "L",
-      "XL"
-    ],
-    "colors": [
-      "Black"
-    ],
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Black"],
     "images": [
-      "assets/abaya1-front.webp",
-      "assets/abaya1-back.webp",
-      "assets/abaya1-detail.webp"
+      "assets/abaya-front.svg",
+      "assets/abaya-back.svg",
+      "assets/abaya-detail.svg"
     ],
     "sku": "ABY-PREM-BLK",
     "description_en": "Elegant crepe abaya with tailored drape and breathable lining.",
     "description_ar": "عباية كريب أنيقة بقصة متقنة وبطانة مريحة."
+  },
+  {
+    "id": "A002",
+    "name_en": "Navy Butterfly Abaya",
+    "name_ar": "عباية فراشة كحلي",
+    "price": 75.0,
+    "compare_at": 95.0,
+    "category": "abaya",
+    "sizes": ["M", "L", "XL"],
+    "colors": ["Navy"],
+    "images": ["assets/abaya2-front.svg", "assets/abaya2-detail.svg"],
+    "sku": "ABY-NAVY-BFY",
+    "description_en": "Flowy butterfly cut with soft-touch fabric.",
+    "description_ar": "قَصّة فراشة مريحة بقماش ناعم."
   },
   {
     "id": "M101",
@@ -31,14 +38,8 @@
     "price": 799.0,
     "category": "majlis",
     "sizes": [],
-    "colors": [
-      "Blue/White"
-    ],
-    "images": [
-      "assets/majlis1-main.webp",
-      "assets/majlis1-alt.webp",
-      "assets/cushions1.webp"
-    ],
+    "colors": ["Blue/White"],
+    "images": ["assets/majlis-main.svg", "assets/majlis-alt.svg"],
     "sku": "MJL-5PC-BLU",
     "description_en": "Traditional seating set with washable covers and firm support.",
     "description_ar": "طقم جلوس عربي مع أغطية قابلة للغسل ودعم مريح."
