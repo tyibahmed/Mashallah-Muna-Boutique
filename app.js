@@ -1,45 +1,40 @@
+// Better Stripe checkout with clear errors
+async function checkoutStripe() {
+  if (!state.cart || state.cart.length === 0) {
+    alert('Your cart is empty.'); 
+    return;
+  }
 
-const state = {
-  products: [], filtered: [], filter: 'all', search: '',
-  lang: localStorage.getItem('lang') || 'en',
-  cart: JSON.parse(localStorage.getItem('cart') || '[]'),
-  selectedProduct: null, selectedSize: null, selectedColor: null
-};
-const i18n = {
-  en:{nav_collections:"Collections",nav_shop:"Shop",nav_contact:"Contact",hero_title:"Discover Modest Elegance",hero_sub:"Abayas & Arabic Majlis • Local pickup in SeaTac, or message us for delivery.",shop_now:"Shop now",whatsapp_us:"WhatsApp us",collections_title:"Collections",c_abayas:"Abayas",c_abayas_desc:"Everyday comfort & occasion styles",c_majlis:"Arabic Majlis",c_majlis_desc:"Traditional seating, washable covers",all:"All",abayas:"Abayas",majlis:"Arabic Majlis",add_to_cart:"Add to cart",your_cart:"Your Cart",subtotal:"Subtotal",checkout_whatsapp:"Checkout via WhatsApp",secure_payments:"Secure payments via"},
-  ar:{nav_collections:"التصنيفات",nav_shop:"المتجر",nav_contact:"تواصل",hero_title:"اكتشفي أناقة محتشمة",hero_sub:"عبايات ومجالس عربية • استلام من سياتاك أو تواصلي للتوصيل.",shop_now:"تسوقي الآن",whatsapp_us:"راسلينا على واتساب",collections_title:"التصنيفات",c_abayas:"عبايات",c_majlis:"مجالس عربية",c_abayas_desc:"راحة يومية وتصاميم للمناسبات",c_majlis_desc:"جلسات تقليدية وأغطية قابلة للغسل",all:"الكل",abayas:"عبايات",majlis:"مجالس عربية",add_to_cart:"أضف للسلة",your_cart:"سلتك",subtotal:"الإجمالي",checkout_whatsapp:"إتمام عبر واتساب",secure_payments:"دفع آمن عبر"}
-};
-(async function(){ try{ const r=await fetch('products.json',{cache:'no-store'}); if(!r.ok) throw new Error('load fail'); state.products=await r.json(); }catch(e){ console.error(e); state.products=[]; } render(); })();
-function t(k){return i18n[state.lang][k]||k} function $(s,r=document){return r.querySelector(s)} function $all(s,r=document){return [...r.querySelectorAll(s)]}
-function applyI18n(){ $all('[data-i18n]').forEach(el=>el.textContent=t(el.dataset.i18n)); document.documentElement.dir=state.lang==='ar'?'rtl':'ltr'; $('#langToggle').textContent=state.lang==='ar'?'EN':'AR'; }
-function filterProducts(){ state.filtered=state.products.filter(p=>{ const ok=state.filter==='all'?true:p.category===state.filter; const q=state.search.toLowerCase(); const n=(p.name_en+' '+p.name_ar).toLowerCase(); return ok&&n.includes(q); }); }
-function formatPrice(p){ const price=`$${p.price.toFixed(2)}`; const compare=p.compare_at&&p.compare_at>p.price?`$${p.compare_at.toFixed(2)}`:''; return {price,compare}; }
-function renderGrid(){ const grid=$('#grid'); grid.innerHTML=''; state.filtered.forEach(p=>{ const {price,compare}=formatPrice(p); const img=p.images?.[0]||p.image; const sale=p.compare_at&&p.compare_at>p.price; const card=document.createElement('article'); card.className='card'; card.innerHTML=`
-  <img src="${img}" alt="${p.name_en}">
-  <div class="body">
-    <div class="name">${state.lang==='ar'?p.name_ar:p.name_en} ${sale?'<span class="badge">Sale</span>':''}</div>
-    <div><span class="price">${price}</span> ${compare?`<span class="compare">${compare}</span>`:''}</div>
-    <div class="row"><button class="btn" data-view="${p.id}">View</button><button class="btn primary" data-add="${p.id}">${t('add_to_cart')}</button></div>
-  </div>`; grid.appendChild(card); }); }
-function buildPicker(id,arr=[],type){ const el=$('#'+id); el.innerHTML=''; if(!arr||arr.length===0){el.style.display='none';return;} el.style.display='flex'; arr.forEach((v,i)=>{ const b=document.createElement('button'); b.textContent=v; if(i===0) b.classList.add('active'); b.addEventListener('click',()=>{ $all('#'+id+' button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); if(type==='size') state.selectedSize=v; if(type==='color') state.selectedColor=v; }); el.appendChild(b); }); }
-function openProduct(p){ state.selectedProduct=p; state.selectedSize=p.sizes?.[0]||null; state.selectedColor=p.colors?.[0]||null; const main=$('#modalMainImg'); const thumbs=$('#modalThumbs'); thumbs.innerHTML=''; const imgs=p.images&&p.images.length?p.images:[p.image]; main.src=imgs[0]; imgs.forEach((src,i)=>{ const im=document.createElement('img'); im.src=src; im.alt=(p.name_en||'')+' '+i; if(i===0) im.classList.add('active'); im.addEventListener('click',()=>{ main.src=src; $all('#modalThumbs img').forEach(x=>x.classList.remove('active')); im.classList.add('active'); }); thumbs.appendChild(im); }); $('#modalTitle').textContent=state.lang==='ar'?p.name_ar:p.name_en; $('#modalDesc').textContent=state.lang==='ar'?p.description_ar:p.description_en; const {price,compare}=formatPrice(p); $('#modalPrice').textContent=price; $('#modalCompare').textContent=compare||''; buildPicker('sizePicker',p.sizes,'size'); buildPicker('colorPicker',p.colors,'color'); $('#productModal').showModal(); }
-function addToCart(p,size=null,color=null){ const key=`${p.id}-${size||''}-${color||''}`; const ex=state.cart.find(x=>x.key===key); if(ex){ex.qty+=1}else{ state.cart.push({key,id:p.id,name_en:p.name_en,name_ar:p.name_ar,price:p.price,image:(p.images?.[0]||p.image),size,color,qty:1}); } localStorage.setItem('cart',JSON.stringify(state.cart)); updateCartCount(); openCart(); renderCartItems(); }
-function updateCartCount(){ $('#cartCount').textContent = state.cart.reduce((s,x)=>s+x.qty,0); }
-function renderCartItems(){ const wrap=$('#cartItems'); wrap.innerHTML=''; let subtotal=0; state.cart.forEach(it=>{ subtotal+=it.price*it.qty; const row=document.createElement('div'); row.className='cart-item'; row.innerHTML=`
-  <img src="${it.image}" alt=""><div><div class="title">${state.lang==='ar'?it.name_ar:it.name_en}</div>
-  <div class="muted">${[it.size,it.color].filter(Boolean).join(' • ')}</div><div class="muted">$${it.price.toFixed(2)} ea</div></div>
-  <div class="qty"><button data-dec="${it.key}">-</button><strong>${it.qty}</strong><button data-inc="${it.key}">+</button></div>`; wrap.appendChild(row); }); $('#subtotal').textContent=`$${subtotal.toFixed(2)}`; }
-function openCart(){ $('#cart').classList.add('open'); } function closeCart(){ $('#cart').classList.remove('open'); }
-function checkoutWhatsApp(){ const to='12066870838'; if(state.cart.length===0){openCart();return;} const lines=['*New Order*']; state.cart.forEach(it=>{ const name=state.lang==='ar'?it.name_ar:it.name_en; lines.push(`• ${name} ${it.size? '('+it.size+')':''} ${it.color? '- '+it.color: ''} x ${it.qty} — $${(it.price*it.qty).toFixed(2)}`); }); const total=state.cart.reduce((s,x)=>s+x.price*x.qty,0); lines.push(`Total: $${total.toFixed(2)}`,'Name:','Pickup/Delivery:'); const msg=encodeURIComponent(lines.join('\\n')); window.open(`https://wa.me/${to}?text=${msg}`,'_blank'); }
-async function checkoutStripe(){ if(state.cart.length===0){openCart();return;} const items=state.cart.map(it=>({id:it.id,qty:it.qty,size:it.size||null,color:it.color||null})); try{ const res=await fetch('/api/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items})}); if(!res.ok) throw new Error('Failed'); const data=await res.json(); if(data.url) window.location.href=data.url; }catch(e){ alert('Stripe checkout error. Please try again.'); } }
-document.addEventListener('click',e=>{ const view=e.target.getAttribute('data-view'); if(view){ openProduct(state.products.find(x=>x.id===view)); } const add=e.target.getAttribute('data-add'); if(add){ addToCart(state.products.find(x=>x.id===add)); } const inc=e.target.getAttribute('data-inc'); if(inc){ const it=state.cart.find(x=>x.key===inc); it.qty+=1; localStorage.setItem('cart',JSON.stringify(state.cart)); renderCartItems(); updateCartCount(); } const dec=e.target.getAttribute('data-dec'); if(dec){ const i=state.cart.findIndex(x=>x.key===dec); if(i>-1){ state.cart[i].qty-=1; if(state.cart[i].qty<=0) state.cart.splice(i,1); localStorage.setItem('cart',JSON.stringify(state.cart)); renderCartItems(); updateCartCount(); }} const coll=e.target.closest('.coll-card'); if(coll){ state.filter=coll.dataset.filter; document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active')); document.querySelector(`.tab[data-filter="${state.filter}"]`).classList.add('active'); filterProducts(); renderGrid(); document.getElementById('shop').scrollIntoView({behavior:'smooth'});} });
-document.getElementById('addToCart')?.addEventListener('click',()=>{ const p=state.selectedProduct; addToCart(p,state.selectedSize,state.selectedColor); document.getElementById('productModal').close(); });
-document.getElementById('closeModal')?.addEventListener('click',()=>document.getElementById('productModal').close());
-document.getElementById('checkout').addEventListener('click',checkoutWhatsApp);
-document.getElementById('checkoutStripe').addEventListener('click',checkoutStripe);
-document.getElementById('closeCart').addEventListener('click',closeCart);
-document.querySelector('.cart-link').addEventListener('click',e=>{ e.preventDefault(); openCart(); });
-document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); state.filter=btn.dataset.filter; filterProducts(); renderGrid(); }));
-document.getElementById('search').addEventListener('input',e=>{ state.search=e.target.value; filterProducts(); renderGrid(); });
-document.getElementById('langToggle').addEventListener('click',()=>{ state.lang=state.lang==='en'?'ar':'en'; localStorage.setItem('lang',state.lang); applyI18n(); filterProducts(); renderGrid(); renderCartItems(); });
-function render(){ document.body.querySelectorAll('#year').forEach(el=>el.textContent=new Date().getFullYear()); applyI18n(); updateCartCount(); filterProducts(); renderGrid(); renderCartItems(); }
+  const items = state.cart.map(it => ({
+    id: it.id,
+    qty: it.qty || 1,
+    size: it.size || null,
+    color: it.color || null
+  }));
+
+  try {
+    const res = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items })
+    });
+
+    // Try to parse JSON either way
+    const text = await res.text();
+    let data = {};
+    try { data = JSON.parse(text); } catch { /* keep raw text if not JSON */ }
+
+    if (res.ok && data && data.url) {
+      window.location.href = data.url; // success: go to Stripe Checkout
+      return;
+    }
+
+    // Not OK – show meaningful hint if present
+    const hint = (data && (data.hint || data.error)) || text || 'Unknown error';
+    console.error('Stripe checkout failed:', { status: res.status, data });
+    alert('Stripe checkout error: ' + hint);
+  } catch (err) {
+    console.error('Network/JS error during checkout:', err);
+    alert('Stripe checkout error: network issue. Please try again.');
+  }
+}
