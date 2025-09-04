@@ -1,0 +1,46 @@
+[
+  {
+    "id": "A001",
+    "name_en": "Premium Black Abaya",
+    "name_ar": "عباية سوداء فاخرة",
+    "price": 89.0,
+    "compare_at": 109.0,
+    "category": "abaya",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "colors": [
+      "Black"
+    ],
+    "images": [
+      "assets/abaya1-front.webp",
+      "assets/abaya1-back.webp",
+      "assets/abaya1-detail.webp"
+    ],
+    "sku": "ABY-PREM-BLK",
+    "description_en": "Elegant crepe abaya with tailored drape and breathable lining.",
+    "description_ar": "عباية كريب أنيقة بقصة متقنة وبطانة مريحة."
+  },
+  {
+    "id": "M101",
+    "name_en": "Arabic Majlis (5 pcs)",
+    "name_ar": "مجلس عربي (٥ قطع)",
+    "price": 799.0,
+    "category": "majlis",
+    "sizes": [],
+    "colors": [
+      "Blue/White"
+    ],
+    "images": [
+      "assets/majlis1-main.webp",
+      "assets/majlis1-alt.webp",
+      "assets/cushions1.webp"
+    ],
+    "sku": "MJL-5PC-BLU",
+    "description_en": "Traditional seating set with washable covers and firm support.",
+    "description_ar": "طقم جلوس عربي مع أغطية قابلة للغسل ودعم مريح."
+  }
+]

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mashallah Muna Boutique</title>
+  <meta name="description" content="Abayas & Arabic Majlis • SeaTac, WA">
+  <link rel="icon" type="image/png" href="assets/logo-mmb-white.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="announce announce-top"><div class="container">Welcome to Mashallah Boutique</div></div>
+
+  <header class="header header-centered">
+    <div class="container header-bar">
+      <button class="icon-btn" id="menuBtn" aria-label="Menu">
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+          <path fill="none" stroke="currentColor" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/>
+        </svg>
+      </button>
+
+      <img src="assets/logo-mmb-white.png" class="wordmark center-logo" alt="Mashallah Muna Boutique">
+
+      <div class="right-icons">
+        <button class="icon-btn" id="langToggle" aria-label="Language">AR</button>
+        <button class="icon-btn" id="searchBtn" aria-label="Search">
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M20 20l-3-3" fill="none" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+        <a href="#cart" class="icon-btn cart-link" aria-label="Open cart">
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path d="M7 6h14l-1.5 8.5a2 2 0 0 1-2 1.5H9.2a2 2 0 0 1-1.95-1.58L5 4H2" fill="none" stroke="currentColor" stroke-width="2"/>
+            <circle cx="10" cy="20" r="1.8" fill="currentColor"/>
+            <circle cx="18" cy="20" r="1.8" fill="currentColor"/>
+          </svg>
+          <span id="cartCount">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="announce announce-bottom"><div class="container">New Items Launched Daily</div></div>
+
+  <aside id="sideMenu" class="side-menu">
+    <button id="closeMenu" class="close-btn" aria-label="Close Menu">×</button>
+    <nav class="menu-nav">
+      <a href="#hero">Home</a>
+      <a href="#collections">Collections</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </aside>
+  <div id="menuOverlay" class="menu-overlay"></div>
+
+  <section id="hero" class="hero">
+    <div class="container hero-inner">
+      <h1 data-i18n="hero_title">Discover Modest Elegance</h1>
+      <p data-i18n="hero_sub">Abayas & Arabic Majlis • Local pickup in SeaTac, or message us for delivery.</p>
+      <div class="cta">
+        <a href="#shop" class="btn primary" data-i18n="shop_now">Shop now</a>
+        <a href="https://wa.me/12066870838" target="_blank" rel="noopener" class="btn outline" data-i18n="whatsapp_us">WhatsApp us</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="collections" class="container collections">
+    <h2 data-i18n="collections_title">Collections</h2>
+    <div class="coll-grid">
+      <a class="coll-card" data-filter="abaya">
+        <img src="assets/abaya1-front.webp" alt="Abayas">
+        <div class="coll-info">
+          <h3 data-i18n="c_abayas">Abayas</h3>
+          <p data-i18n="c_abayas_desc">Everyday comfort & occasion styles</p>
+        </div>
+      </a>
+      <a class="coll-card" data-filter="majlis">
+        <img src="assets/majlis1-main.webp" alt="Arabic Majlis">
+        <div class="coll-info">
+          <h3 data-i18n="c_majlis">Arabic Majlis</h3>
+          <p data-i18n="c_majlis_desc">Traditional seating, washable covers</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <main id="shop" class="container shop">
+    <div class="filters">
+      <div class="tabs">
+        <button class="tab active" data-filter="all" data-i18n="all">All</button>
+        <button class="tab" data-filter="abaya" data-i18n="abayas">Abayas</button>
+        <button class="tab" data-filter="majlis" data-i18n="majlis">Arabic Majlis</button>
+      </div>
+      <input id="search" type="search" placeholder="Search…" aria-label="Search products">
+    </div>
+    <div id="grid" class="grid" aria-live="polite"></div>
+  </main>
+
+  <section id="contact" class="container contact">
+    <h2 data-i18n="contact_title">Contact</h2>
+    <ul>
+      <li>📞 <a href="tel:+12066870838">(206) 687-0838</a></li>
+      <li>📍 16256 Military Rd. S, Unit 111, SeaTac, WA 98188</li>
+      <li>💬 <a href="https://wa.me/12066870838" target="_blank" rel="noopener">WhatsApp</a></li>
+      <li>🕒 Daily 12pm–12am</li>
+    </ul>
+  </section>
+
+  <footer class="footer">
+    <div class="container foot-inner">
+      <p class="muted">© <span id="year"></span> Mashallah Muna Boutique</p>
+      <div class="foot-right">
+        <span class="muted" data-i18n="secure_payments">Secure payments via</span>
+        <span>Stripe</span>
+      </div>
+    </div>
+  </footer>
+
+  <dialog id="productModal">
+    <button id="closeModal" aria-label="Close">×</button>
+    <div class="modal-body">
+      <div class="gallery">
+        <img id="modalMainImg" alt="">
+        <div id="modalThumbs" class="thumbs"></div>
+      </div>
+      <div class="modal-info">
+        <h3 id="modalTitle"></h3>
+        <p id="modalDesc"></p>
+        <div class="pricebox">
+          <span class="price" id="modalPrice"></span>
+          <span class="compare" id="modalCompare"></span>
+        </div>
+        <div id="sizePicker" class="picker"></div>
+        <div id="colorPicker" class="picker"></div>
+        <div class="modal-actions">
+          <button id="addToCart" class="btn primary" data-i18n="add_to_cart">Add to cart</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <aside id="cart" class="cart">
+    <div class="cart-header">
+      <h4 data-i18n="your_cart">Your Cart</h4>
+      <button id="closeCart" aria-label="Close">×</button>
+    </div>
+    <div id="cartItems"></div>
+    <div class="cart-footer">
+      <div class="totals">
+        <span data-i18n="subtotal">Subtotal</span>
+        <strong id="subtotal">$0.00</strong>
+      </div>
+      <button id="checkoutStripe" class="btn primary">Pay with Card (Stripe)</button>
+      <button id="checkout" class="btn outline" data-i18n="checkout_whatsapp">Checkout via WhatsApp</button>
+    </div>
+  </aside>
+
+  <script src="app.js"></script>
+
+  <script>
+    // MENU OPEN/CLOSE + SMOOTH SCROLL
+    const menuBtn   = document.getElementById('menuBtn');
+    const sideMenu  = document.getElementById('sideMenu');
+    const closeMenu = document.getElementById('closeMenu');
+    const overlay   = document.getElementById('menuOverlay');
+    function openMenu(){ sideMenu.classList.add('open'); overlay.classList.add('show'); }
+    function hideMenu(){ sideMenu.classList.remove('open'); overlay.classList.remove('show'); }
+    menuBtn?.addEventListener('click', openMenu);
+    closeMenu?.addEventListener('click', hideMenu);
+    overlay?.addEventListener('click', hideMenu);
+    document.querySelectorAll('.menu-nav a').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const t = document.querySelector(a.getAttribute('href'));
+        if(t){ e.preventDefault(); hideMenu(); setTimeout(()=>t.scrollIntoView({behavior:'smooth'}), 200); }
+      });
+    });
+
+    // HEADER SEARCH ICON -> focus product search
+    document.getElementById('searchBtn')?.addEventListener('click', () => {
+      const input = document.getElementById('search');
+      if (input) {
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => input.focus(), 250);
+      }
+    });
+  </script>
+</body>
+</html>
