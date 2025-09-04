@@ -62,34 +62,70 @@ function renderGrid() {
   if (!grid) return;
 
   if (!state.filtered.length) {
-    grid.innerHTML = `
-      <div class="empty">
-        No products found.
-      </div>
-    `;
+    grid.innerHTML = `<div class="empty">No products found.</div>`;
     return;
   }
 
-  grid.innerHTML = state.filtered.map(p => `
-    <div class="card">
-      <div class="card-media">
-        <img src="${(p.images && p.images[0]) || 'assets/placeholder.svg'}" alt="${p.name_en}">
-      </div>
-      <div class="card-body">
-        <h3 class="title">${p.name_en}</h3>
-        <div class="price-line">
-          <span class="price">${money(p.price)}</span>
-          ${p.compare_at ? `<span class="compare">${money(p.compare_at)}</span>` : ''}
+  grid.innerHTML = state.filtered.map(p => {
+    const first = (p.images && p.images[0]) || 'assets/placeholder.svg';
+    const count = (p.images || []).length;
+    return `
+      <div class="card" data-id="${p.id}">
+        <div class="card-media">
+          <img class="gallery-img" src="${first}" alt="${p.name_en}" data-idx="0">
+          ${count > 1 ? `
+            <button class="gal-btn prev" aria-label="Previous image">‹</button>
+            <button class="gal-btn next" aria-label="Next image">›</button>
+            <div class="dots">
+              ${p.images.map((_,i)=>`<span class="dot ${i===0?'on':''}" data-dot="${i}"></span>`).join('')}
+            </div>
+          ` : ``}
         </div>
-        <div class="actions">
-          <button class="btn" data-id="${p.id}">Add to cart</button>
+        <div class="card-body">
+          <h3 class="title">${p.name_en}</h3>
+          <div class="price-line">
+            <span class="price">${money(p.price)}</span>
+            ${p.compare_at ? `<span class="compare">${money(p.compare_at)}</span>` : ''}
+          </div>
+          <div class="actions">
+            <button class="btn add" data-id="${p.id}">Add to cart</button>
+          </div>
         </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 
-  $$('#grid .btn').forEach(btn=>{
+  // Add to cart
+  $$('#grid .btn.add').forEach(btn=>{
     btn.onclick = () => addToCart(btn.getAttribute('data-id'));
+  });
+
+  // Gallery controls (event delegation)
+  grid.addEventListener('click', (e) => {
+    const prev = e.target.closest('.gal-btn.prev');
+    const next = e.target.closest('.gal-btn.next');
+    const dot  = e.target.closest('.dot');
+    if (!prev && !next && !dot) return;
+
+    const card = e.target.closest('.card');
+    const id   = card.dataset.id;
+    const prod = state.products.find(p=>p.id===id);
+    if (!prod || !prod.images || prod.images.length < 2) return;
+
+    const img  = card.querySelector('.gallery-img');
+    let idx    = parseInt(img.dataset.idx || '0', 10);
+
+    if (prev) idx = (idx - 1 + prod.images.length) % prod.images.length;
+    if (next) idx = (idx + 1) % prod.images.length;
+    if (dot)  idx = parseInt(dot.dataset.dot, 10);
+
+    img.src = prod.images[idx];
+    img.dataset.idx = String(idx);
+
+    // update dots
+    card.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('on', i === idx);
+    });
   });
 }
 
