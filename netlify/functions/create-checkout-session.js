@@ -1,8 +1,6 @@
 // netlify/functions/create-checkout-session.js
 const Stripe = require('stripe');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' });
-
-// NOTE: this is at the repo root: /api/stripe-prices.json
 const prices = require('../../api/stripe-prices.json');
 
 exports.handler = async function (event) {
@@ -33,7 +31,7 @@ exports.handler = async function (event) {
       shipping_address_collection: { allowed_countries: ['US', 'CA'] },
       success_url: `${origin}/?success=true`,
       cancel_url: `${origin}/?canceled=true`,
-      billing_address_collection: 'required',
+      billing_address_collection: 'required'
     });
 
     return { statusCode: 200, body: JSON.stringify({ url: session.url }) };
@@ -41,7 +39,7 @@ exports.handler = async function (event) {
     console.error('Stripe checkout error:', err?.message || err);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'server_error', hint: err?.message || 'unknown' }),
+      body: JSON.stringify({ error: 'server_error', hint: err?.message || 'unknown' })
     };
   }
 };

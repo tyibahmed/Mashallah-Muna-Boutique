@@ -9,9 +9,9 @@
     "sizes": ["S", "M", "L", "XL"],
     "colors": ["Black"],
     "images": [
-      "assets/abaya-front.svg",
-      "assets/abaya-back.svg",
-      "assets/abaya-detail.svg"
+      "assets/abaya1-front.webp",
+      "assets/abaya1-back.webp",
+      "assets/abaya1-detail.webp"
     ],
     "sku": "ABY-PREM-BLK",
     "description_en": "Elegant crepe abaya with tailored drape and breathable lining.",
@@ -26,10 +26,28 @@
     "category": "abaya",
     "sizes": ["M", "L", "XL"],
     "colors": ["Navy"],
-    "images": ["assets/abaya2-front.svg", "assets/abaya2-detail.svg"],
+    "images": [
+      "assets/abaya2-front.webp",
+      "assets/abaya2-back.webp",
+      "assets/abaya2-detail.webp"
+    ],
     "sku": "ABY-NAVY-BFY",
     "description_en": "Flowy butterfly cut with soft-touch fabric.",
     "description_ar": "قَصّة فراشة مريحة بقماش ناعم."
+  },
+  {
+    "id": "A003",
+    "name_en": "Classic Crepe Abaya",
+    "name_ar": "عباية كريب كلاسيكية",
+    "price": 65.0,
+    "compare_at": 79.0,
+    "category": "abaya",
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Black", "Gray"],
+    "images": ["assets/abaya3.webp"],
+    "sku": "ABY-CRP-CLSC",
+    "description_en": "Timeless design in lightweight crepe fabric for daily wear.",
+    "description_ar": "تصميم كلاسيكي من قماش الكريب الخفيف للاستخدام اليومي."
   },
   {
     "id": "M101",
@@ -39,9 +57,41 @@
     "category": "majlis",
     "sizes": [],
     "colors": ["Blue/White"],
-    "images": ["assets/majlis-main.svg", "assets/majlis-alt.svg"],
+    "images": [
+      "assets/majlis1-main.webp",
+      "assets/majlis1-alt.webp"
+    ],
     "sku": "MJL-5PC-BLU",
     "description_en": "Traditional seating set with washable covers and firm support.",
     "description_ar": "طقم جلوس عربي مع أغطية قابلة للغسل ودعم مريح."
+  },
+  {
+    "id": "M102",
+    "name_en": "Luxury Majlis (7 pcs)",
+    "name_ar": "مجلس فاخر (٧ قطع)",
+    "price": 1099.0,
+    "category": "majlis",
+    "sizes": [],
+    "colors": ["Gray/White"],
+    "images": [
+      "assets/majlis2-main.jpg",
+      "assets/majlis2.jpg"
+    ],
+    "sku": "MJL-7PC-LUX",
+    "description_en": "Spacious majlis set with premium cushions and elegant design.",
+    "description_ar": "مجلس واسع مع وسائد فاخرة وتصميم أنيق."
+  },
+  {
+    "id": "M103",
+    "name_en": "Compact Majlis (3 pcs)",
+    "name_ar": "مجلس صغير (٣ قطع)",
+    "price": 499.0,
+    "category": "majlis",
+    "sizes": [],
+    "colors": ["Navy"],
+    "images": ["assets/majlis3.webp"],
+    "sku": "MJL-3PC-CMP",
+    "description_en": "Compact majlis perfect for small rooms or apartments.",
+    "description_ar": "مجلس صغير مثالي للغرف أو الشقق الصغيرة."
   }
 ]
