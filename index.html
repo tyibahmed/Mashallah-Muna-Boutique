@@ -9,6 +9,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- Basic SEO -->
+  <meta name="description" content="Mashallah Muna Boutique — Abayas & Arabic Majlis. Elegant styles, traditional seating, fast shipping." />
+  <link rel="icon" href="assets/logo-mmb-white.png" type="image/png" />
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -16,7 +20,6 @@
   <header class="header">
     <button class="icon-btn menu" id="openMenu" aria-label="Menu">☰</button>
     <a class="site-logo" href="/">
-      <!-- Replace with your logo -->
       <img src="assets/logo-mmb-white.png" alt="Mashallah Muna Boutique" />
     </a>
     <div class="header-actions">
@@ -28,13 +31,35 @@
     </div>
   </header>
 
-  <!-- Collections hero (optional) -->
-  <section class="hero">
+  <!-- Shared overlay for drawers/modals -->
+  <div id="overlay" class="overlay hidden"></div>
+
+  <!-- Slide-out side menu -->
+  <nav id="sideMenu" class="side-menu hidden" aria-label="Main">
+    <div class="side-menu-head">
+      <span>Menu</span>
+      <button id="closeMenu" class="icon-btn" aria-label="Close">✕</button>
+    </div>
+    <ul class="side-menu-list">
+      <li><a href="/">Home</a></li>
+      <li><a href="#collections">Collections</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Search drawer -->
+  <div id="searchBar" class="search-bar hidden" role="search">
+    <input id="searchInput" type="search" placeholder="Search products…" aria-label="Search products" />
+    <button id="closeSearch" class="icon-btn" aria-label="Close search">✕</button>
+  </div>
+
+  <!-- Collections hero -->
+  <section class="hero" id="collections" aria-label="Collections">
     <div class="hero-tile">
       <img src="assets/abaya1-front.webp" alt="Abayas">
       <div class="hero-caption">
         <h3>Abayas</h3>
-        <p>Everyday comfort & occasion styles</p>
+        <p>Everyday comfort &amp; occasion styles</p>
       </div>
     </div>
     <div class="hero-tile">
@@ -47,18 +72,26 @@
   </section>
 
   <main class="container">
-    <!-- Tabs + search -->
+    <!-- Tabs + inline search (kept) -->
     <div class="controls">
       <div id="tabs" class="tabs"></div>
-      <input id="search" class="search" type="search" placeholder="Search…" />
+      <input id="search" class="search" type="search" placeholder="Search…" aria-label="Search products (inline)" />
     </div>
 
     <!-- Product grid -->
-    <div id="grid" class="grid"></div>
+    <div id="grid" class="grid" aria-live="polite"></div>
   </main>
 
+  <!-- Contact section -->
+  <section id="contact" class="contact" aria-label="Contact">
+    <h2>Contact</h2>
+    <p>Phone: <a href="tel:+12066870838">+1 (206) 687-0838</a></p>
+    <p>Address: 16256 Military Rd. S. unit 111, SeaTac, WA 98188</p>
+    <p>Hours: Daily 10:00am – 8:00pm</p>
+  </section>
+
   <!-- Cart side panel -->
-  <aside id="cartPanel" class="cart-panel"></aside>
+  <aside id="cartPanel" class="cart-panel" aria-label="Shopping cart"></aside>
 
   <!-- Quick View modal -->
   <div id="quickView" class="qv hidden" role="dialog" aria-modal="true" aria-labelledby="qvTitle">
