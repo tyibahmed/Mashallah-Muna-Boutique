@@ -98,3 +98,84 @@ a{ color:var(--rose); text-decoration:none }
 .qv-body{ padding:18px }
 .qv-close{ position:absolute; top:14px; right:14px; background:#000; color:#fff; border:0; width:36px; height:36px; border-radius:999px; cursor:pointer }
 @media (max-width:820px){ .qv-box{ grid-template-columns:1fr } }
+/* overlay & hidden */
+.overlay{ position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:9000; }
+.hidden{ display:none !important; }
+
+/* side menu */
+.side-menu{
+  position:fixed; inset:0 auto 0 0; width:min(320px,90vw);
+  background:linear-gradient(180deg,var(--ink-2),#0e0e0f);
+  border-right:1px solid rgba(212,175,55,.25);
+  box-shadow:18px 0 40px rgba(0,0,0,.45);
+  transform:translateX(-100%); transition:transform .25s ease; z-index:10000;
+}
+.side-menu.open{ transform:translateX(0); }
+.side-menu-head{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(212,175,55,.18) }
+.side-menu-list{ list-style:none; margin:0; padding:10px 12px; }
+.side-menu-list a{ display:block; padding:10px 12px; border-radius:10px; color:var(--text); border:1px solid transparent; }
+.side-menu-list a:hover{ border-color:rgba(212,175,55,.35); background:rgba(212,175,55,.08) }
+
+/* search drawer */
+.search-bar{
+  position:sticky; top:60px; z-index:8000;
+  display:flex; gap:8px; align-items:center;
+  padding:10px clamp(14px,3vw,28px);
+  background:linear-gradient(180deg, rgba(239,178,197,.12), rgba(239,178,197,.04));
+  border-bottom:1px solid rgba(212,175,55,.2);
+  backdrop-filter: blur(8px);
+}
+#searchInput{
+  flex:1; background:#0e0e10; color:var(--text); border-radius:12px; padding:10px 12px; border:1px solid rgba(212,175,55,.25);
+}
+
+/* ensure cart close is visible */
+.cart .cart-head .icon-btn{
+  font-size:18px; background:#000; border:1px solid rgba(212,175,55,.3); border-radius:10px; padding:6px 10px;
+}
+
+/* Quick View gallery + options */
+.qv-media{ position:relative; }
+.qv-btn{ position:absolute; top:50%; transform:translateY(-50%); width:36px; height:36px; border-radius:999px; border:0;
+  color:#fff; line-height:36px; font-size:20px; cursor:pointer; background:rgba(0,0,0,.45); z-index:3; }
+.qv-btn.prev{ left:8px } .qv-btn.next{ right:8px }
+.qv-dots{ position:absolute; left:0; right:0; bottom:8px; display:flex; justify-content:center; gap:6px; z-index:3 }
+.qv-dots .dot{ width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.5); cursor:pointer }
+.qv-dots .dot.on{ background:#fff }
+.opt{ display:flex; flex-direction:column; gap:6px; margin:10px 0; }
+.opt select{ background:#0e0e10; color:var(--text); border:1px solid rgba(212,175,55,.25); border-radius:10px; padding:8px 10px; }
+
+/* cart meta (size/color) */
+.cart-meta{ font-size:.85rem; opacity:.8 }
+
+/* footer */
+.footer{ margin-top:24px; border-top:1px solid rgba(212,175,55,.2); background:linear-gradient(180deg,var(--card),var(--card-2)); }
+.foot-inner{ display:flex; gap:20px; justify-content:space-between; padding:18px clamp(14px,3vw,28px); flex-wrap:wrap; }
+.foot-copy{ padding:10px clamp(14px,3vw,28px) 18px; opacity:.8 }
+.footer a{ color:var(--rose) }
+.footer a{ color:var(--rose) }
+
+/* Smooth in-page anchor scroll (Collections, Contact) */
+html { scroll-behavior: smooth; }
+section[id] { scroll-margin-top: 76px; } /* offset for sticky header */
+
+/* Ensure the cart drawer feels solid on mobile */
+.cart-panel { overscroll-behavior: contain; }
+
+/* Cart qty buttons (− / +) */
+.cart-qty { display:flex; align-items:center; gap:10px; }
+.qbtn{
+  width:32px; height:32px; border-radius:10px; border:1px solid rgba(212,175,55,.35);
+  background:#0e0e10; color:var(--text); cursor:pointer; line-height:32px; font-weight:700;
+}
+.qbtn:hover{ box-shadow: var(--ring); }
+
+/* Empty-state text */
+.empty{ text-align:center; opacity:.8; padding:20px 10px; }
+
+/* Quick View: make next/prev buttons always visible over images */
+.qv-media { background:#0f0f10; min-height:260px; }
+.qv-media img{ background:#0f0f10; }
+
+/* Improve tap targets in the side menu on mobile */
+.side-menu-list a{ min-height:40px; display:flex; align-items:center; }

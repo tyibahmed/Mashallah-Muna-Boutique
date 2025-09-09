@@ -1,6 +1,6 @@
 /* =========================
    MASHALLAH MUNA BOUTIQUE
-   Complete app.js
+   Complete app.js (fixed)
    ========================= */
 
 /* ---------- Utilities ---------- */
@@ -12,8 +12,8 @@ const money = (n) => `$${Number(n).toFixed(2)}`;
 const state = {
   products: [],
   filtered: [],
-  cart: [],
-  activeTab: 'all', // all | abaya | majlis (from products.json)
+  cart: [],               // [{ key, id, qty, name, price, size, color }]
+  activeTab: 'all',       // all | abaya | majlis
 };
 
 /* ---------- Initial load ---------- */
@@ -29,13 +29,15 @@ const state = {
     state.products = [];
   }
 
-  // initial filter + render
   applyFilter('all');
   renderTabs();
   wireHeaderDrawers();   // menu + search + overlay behaviors
   renderGrid();
   renderCartIcon();
   handleStripeReturn();  // ?success=true / ?canceled=true
+
+  // Header cart button
+  $('#openCart')?.addEventListener('click', openCart);
 })();
 
 /* ---------- Filtering ---------- */
@@ -69,7 +71,7 @@ function renderGrid() {
   const grid = $('#grid'); if (!grid) return;
 
   if (!state.filtered.length) {
-    grid.innerHTML = `<div class="empty" style="opacity:.8;padding:16px">No products found.</div>`;
+    grid.innerHTML = `<div class="empty">No products found.</div>`;
     return;
   }
 
@@ -133,16 +135,63 @@ function renderGrid() {
 }
 
 /* ---------- Quick View ---------- */
-function openQuickView(id) {
-  const p = state.products.find(x => x.id === id); if (!p) return;
-  $('#qvImg').src = (p.images && p.images[0]) || 'assets/placeholder.svg';
+function openQuickView(id){
+  const p = state.products.find(x=>x.id===id); if(!p) return;
+
+  // gallery state
+  const imgs = Array.isArray(p.images) ? p.images : [];
+  let idx = 0;
+
+  const imgEl   = $('#qvImg');
+  const dotsEl  = $('#qvDots');
+  const optsEl  = $('#qvOptions');
+
+  function renderQvImage(){
+    imgEl.src = imgs[idx] || 'assets/placeholder.svg';
+    imgEl.dataset.idx = String(idx);
+    dotsEl.innerHTML = imgs.map((_,i)=>`<span class="dot ${i===idx?'on':''}" data-dot="${i}"></span>`).join('');
+  }
+
+  // Fill content
   $('#qvTitle').textContent = p.name_en;
-  $('#qvPrice').textContent = p.compare_at ? `${money(p.price)}  (was ${money(p.compare_at)})` : money(p.price);
+  $('#qvPrice').textContent = p.compare_at ? `${money(p.price)} (was ${money(p.compare_at)})` : money(p.price);
   $('#qvDesc').textContent  = p.description_en || '';
-  $('#qvAdd').onclick = () => { addToCart(id); closeQuickView(); };
+
+  // Options (sizes/colors if present)
+  optsEl.innerHTML = `
+    ${Array.isArray(p.sizes) && p.sizes.length ? `
+      <label class="opt">
+        <span>Size</span>
+        <select id="qvSize">
+          ${p.sizes.map(s=>`<option value="${s}">${s}</option>`).join('')}
+        </select>
+      </label>` : ``}
+    ${Array.isArray(p.colors) && p.colors.length ? `
+      <label class="opt">
+        <span>Color</span>
+        <select id="qvColor">
+          ${p.colors.map(c=>`<option value="${c}">${c}</option>`).join('')}
+        </select>
+      </label>` : ``}
+  `;
+
+  renderQvImage();
   $('#quickView').classList.remove('hidden');
+
+  // gallery controls
+  $('.qv-btn.prev').onclick = ()=>{ if(imgs.length>1){ idx = (idx - 1 + imgs.length) % imgs.length; renderQvImage(); } };
+  $('.qv-btn.next').onclick = ()=>{ if(imgs.length>1){ idx = (idx + 1) % imgs.length; renderQvImage(); } };
+  dotsEl.onclick = (e)=>{ const d = e.target.closest('.dot'); if(!d) return; idx = parseInt(d.dataset.dot,10); renderQvImage(); };
+
+  // add to cart with selected options
+  $('#qvAdd').onclick = ()=>{
+    const size  = $('#qvSize')?.value || null;
+    const color = $('#qvColor')?.value || null;
+    addToCart(p.id, { size, color });
+    closeQuickView();
+  };
 }
-function closeQuickView() { $('#quickView')?.classList.add('hidden'); }
+function closeQuickView(){ $('#quickView')?.classList.add('hidden'); }
 $('#qvClose')?.addEventListener('click', closeQuickView);
 $('#quickView')?.addEventListener('click', e => { if (e.target.id === 'quickView') closeQuickView(); });
 
@@ -152,24 +201,24 @@ function renderCartIcon() {
   const badge = $('#cartCount'); if (badge) badge.textContent = String(n);
 }
 
-function addToCart(id) {
-  const p = state.products.find(x => x.id === id); if (!p) return;
-  // respect stock if provided
+function addToCart(id, opts={}){
+  const p = state.products.find(x=>x.id===id); if(!p) return;
+  // stock check optional
   if (typeof p.stock === 'number') {
-    const inCart = state.cart.find(x => x.id === id)?.qty || 0;
-    if (inCart >= p.stock) { alert('This item is out of stock.'); return; }
+    const sumQty = state.cart.filter(x=>x.id===id).reduce((s,it)=>s+it.qty,0);
+    if (sumQty >= p.stock) { alert('This item is out of stock.'); return; }
   }
-  const ex = state.cart.find(x => x.id === id);
-  if (ex) ex.qty += 1;
-  else state.cart.push({ id, qty: 1, name: p.name_en, price: p.price });
-  renderCartIcon();
-  openCart();
+  const key = id + '|' + (opts.size||'') + '|' + (opts.color||''); // unique per variant
+  const ex = state.cart.find(x=>x.key===key);
+  if(ex) ex.qty += 1;
+  else state.cart.push({ key, id, qty:1, name:p.name_en, price:p.price, size:opts.size||null, color:opts.color||null });
+  renderCartIcon(); openCart();
 }
 
-function openCart() {
-  const panel = $('#cartPanel'); if (!panel) return;
+function openCart(){
+  const panel = $('#cartPanel'); if(!panel) return;
 
-  if (!state.cart.length) {
+  if(!state.cart.length){
     panel.innerHTML = `
       <div class="cart">
         <div class="cart-head">
@@ -183,25 +232,28 @@ function openCart() {
     return;
   }
 
-  const rows = state.cart.map(it => {
-    const p = state.products.find(x => x.id === it.id);
+  const rows = state.cart.map(it=>{
+    const p = state.products.find(x=>x.id===it.id);
+    const meta = [it.size, it.color].filter(Boolean).join(' · ');
     return `
       <div class="cart-row">
-        <div class="cart-title">${p?.name_en || it.id}</div>
-        <div class="cart-qty">
-          <button class="qbtn" data-action="dec" data-id="${it.id}" aria-label="Decrease">−</button>
-          <span>${it.qty}</span>
-          <button class="qbtn" data-action="inc" data-id="${it.id}" aria-label="Increase">+</button>
+        <div class="cart-title">
+          ${p?.name_en || it.id}
+          ${meta ? `<div class="cart-meta">${meta}</div>` : ``}
         </div>
-        <div class="cart-sub">${money((p?.price || 0) * it.qty)}</div>
-      </div>
-    `;
+        <div class="cart-qty">
+          <button class="qbtn" data-action="dec" data-key="${it.key}">−</button>
+          <span>${it.qty}</span>
+          <button class="qbtn" data-action="inc" data-key="${it.key}">+</button>
+        </div>
+        <div class="cart-sub">${money((p?.price||0)*it.qty)}</div>
+      </div>`;
   }).join('');
 
-  const total = state.cart.reduce((s, it) => {
-    const p = state.products.find(x => x.id === it.id);
-    return s + (p?.price || 0) * it.qty;
-  }, 0);
+  const total = state.cart.reduce((s,it)=>{
+    const p = state.products.find(x=>x.id===it.id);
+    return s + (p?.price||0) * it.qty;
+  },0);
 
   panel.innerHTML = `
     <div class="cart">
@@ -221,20 +273,18 @@ function openCart() {
 
   // wire controls
   $('#closeCartX').onclick = () => panel.classList.remove('open');
-  $('#clearCart').onclick = () => { state.cart = []; renderCartIcon(); openCart(); };
-  $$('#cartPanel .qbtn').forEach(b => {
-    const id = b.dataset.id;
-    b.onclick = () => {
-      const it = state.cart.find(x => x.id === id); if (!it) return;
-      if (b.dataset.action === 'inc') it.qty += 1; else it.qty = Math.max(0, it.qty - 1);
-      if (it.qty === 0) state.cart = state.cart.filter(x => x.id !== id);
+  $('#clearCart').onclick = () => { state.cart=[]; renderCartIcon(); openCart(); };
+  $$('#cartPanel .qbtn').forEach(b=>{
+    const key = b.dataset.key;
+    b.onclick = ()=>{
+      const it = state.cart.find(x=>x.key===key); if(!it) return;
+      if(b.dataset.action==='inc') it.qty+=1; else it.qty=Math.max(0,it.qty-1);
+      if(it.qty===0) state.cart = state.cart.filter(x=>x.key!==key);
       openCart(); renderCartIcon();
     };
   });
   $('#checkoutStripe').onclick = checkoutStripe;
 }
-
-$('#openCart')?.addEventListener('click', openCart);
 
 /* ---------- Stripe Checkout ---------- */
 async function checkoutStripe() {
@@ -250,12 +300,9 @@ async function checkoutStripe() {
 
     const text = await res.text();
     let data = {};
-    try { data = JSON.parse(text); } catch { /* not JSON */ }
+    try { data = JSON.parse(text); } catch {}
 
-    if (res.ok && data.url) {
-      window.location.href = data.url;
-      return;
-    }
+    if (res.ok && data.url) { window.location.href = data.url; return; }
     const hint = (data && (data.hint || data.error)) || text || 'Unknown error';
     console.error('Stripe checkout failed:', { status: res.status, data });
     alert('Stripe checkout error: ' + hint);
@@ -265,7 +312,7 @@ async function checkoutStripe() {
   }
 }
 
-/* After redirect back from Stripe */
+/* ---------- After redirect back from Stripe ---------- */
 function handleStripeReturn() {
   const url = new URL(location.href);
   if (url.searchParams.get('success') === 'true') {
